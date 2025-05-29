@@ -2,9 +2,9 @@ import axios from "axios";
 import type { Note, SortBy, Tag } from "../types/note";
 
 const API_KEY = import.meta.env.VITE_NOTEHUB_TOKEN;
-axios.defaults.headers.common["Authorization"] = API_KEY;
+axios.defaults.baseURL = "https://notehub-public.goit.study/api/notes";
+axios.defaults.headers.common["Authorization"] = `Bearer ${API_KEY}`;
 axios.defaults.headers.common["Accept"] = "application/json";
-axios.defaults.headers.post["Content-Type"] = "application/json";
 
 interface FetchNotesHTTPResponse {
   notes: Note[];
@@ -12,10 +12,11 @@ interface FetchNotesHTTPResponse {
 }
 
 interface FetchNotesParams {
-  query: string;
+  query?: string;
   page?: number;
-  tag: Tag;
-  sortby: SortBy;
+  tag?: Tag;
+  sortBy?: SortBy;
+  perPage?: number;
 }
 
 interface CreateNoteParams {
@@ -29,23 +30,20 @@ interface DeleteNoteParams {
 }
 
 export async function fetchNotes({
-  query = "",
+  query,
   page = 1,
-  tag = "Todo",
-  sortby = "created",
+  tag,
+  sortBy = "created",
 }: FetchNotesParams) {
-  const response = await axios.get<FetchNotesHTTPResponse>(
-    "https://notehub-public.goit.study/api/notes",
-    {
-      params: {
-        search: query,
-        page: page,
-        tag: tag,
-        perPage: 10,
-        sortBy: sortby,
-      },
-    }
-  );
+  const params: FetchNotesParams = {
+    page: page,
+    perPage: 12,
+    sortBy: sortBy,
+  };
+  if (query) params.query = query;
+  if (tag) params.tag = tag;
+
+  const response = await axios.get<FetchNotesHTTPResponse>("", { params });
   return response.data;
 }
 
@@ -54,16 +52,13 @@ export async function createNote({
   content = "",
   tag = "Todo",
 }: CreateNoteParams) {
-  const response = await axios.post<Note>(
-    "https://notehub-public.goit.study/api/notes",
-    { data: { title: title, content: content, tag: tag } }
-  );
+  const response = await axios.post<Note>("", {
+    data: { title: title, content: content, tag: tag },
+  });
   return response.data;
 }
 
 export async function deleteNote({ id }: DeleteNoteParams) {
-  const response = await axios.delete<Note>(
-    `https://notehub-public.goit.study/api/notes/${id}`
-  );
+  const response = await axios.delete<Note>(`/${id}`);
   return response.data;
 }
