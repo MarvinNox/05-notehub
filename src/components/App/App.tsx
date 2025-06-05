@@ -11,6 +11,7 @@ import {
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import NoteModal from "../NoteModal/NoteModal";
+import SearchBox from "../SearchBox/SearchBox";
 
 function App() {
   const [page, setPage] = useState(1);
@@ -22,31 +23,21 @@ function App() {
   const handleCreateNote = () => {
     setIsModal(true);
   };
-  const closeModal = () => {};
+  const closeModal = () => {
+    setIsModal(false);
+  };
 
   const { data, isError, isLoading, isSuccess } = useQuery({
-    queryKey: ["note", page, query],
+    queryKey: ["notes", page, query],
     queryFn: () => fetchNotes({ page: page, query: debouncedQuery }),
     placeholderData: keepPreviousData,
   });
-
-  // useEffect(() => {
-  //   if (isSuccess && data.total_results == 0) {
-  //     toast.error("No movies found for your request.", {
-  //       style: {
-  //         borderRadius: "10px",
-  //         background: "#444",
-  //         color: "#fff",
-  //       },
-  //     });
-  //   }
-  // }, [data, isSuccess]);
 
   return (
     <>
       <div className={css.app}>
         <header className={css.toolbar}>
-          {/* Компонент SearchBox */}
+          <SearchBox onChange={() => {}} />
           {isSuccess && data.totalPages > 1 && (
             <ReactPaginate
               pageCount={data.totalPages}
@@ -61,7 +52,11 @@ function App() {
               previousLabel={<MdOutlineKeyboardArrowLeft size={12} />}
             />
           )}
-          {<button className={css.button}>Create note +</button>}
+          {
+            <button onClick={handleCreateNote} className={css.button}>
+              Create note +
+            </button>
+          }
         </header>
 
         {data?.notes && (

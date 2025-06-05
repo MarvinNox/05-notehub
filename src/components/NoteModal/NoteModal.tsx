@@ -1,4 +1,3 @@
-import type { Note } from "../../types/note";
 import css from "./NoteModal.module.css";
 import NoteForm from "../NoteForm/NoteForm";
 import { useCallback, useEffect } from "react";
@@ -39,7 +38,9 @@ export default function NoteModal({ onClose }: NoteModalProps) {
       role="dialog"
       aria-modal="true"
     >
-      <div className={css.modal}>{/*noteForm */}</div>
+      <div className={css.modal}>
+        <NoteForm onClose={onClose} />
+      </div>
     </div>,
     document.body
   );

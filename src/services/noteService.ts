@@ -19,14 +19,10 @@ interface FetchNotesParams {
   perPage?: number;
 }
 
-interface CreateNoteParams {
+export interface CreateNoteParams {
   title: string;
   content: string;
   tag: Tag;
-}
-
-interface DeleteNoteParams {
-  id: number;
 }
 
 export async function fetchNotes({
@@ -53,12 +49,16 @@ export async function createNote({
   tag = "Todo",
 }: CreateNoteParams) {
   const response = await axios.post<Note>("", {
-    data: { title: title, content: content, tag: tag },
+    title,
+    content,
+    tag,
   });
   return response.data;
 }
 
-export async function deleteNote({ id }: DeleteNoteParams) {
-  const response = await axios.delete<Note>(`/${id}`);
+export async function deleteNote(noteId: number) {
+  const response = await axios.delete<Note>(`/${noteId}`);
   return response.data;
 }
+
+export async function searchNote() {}
