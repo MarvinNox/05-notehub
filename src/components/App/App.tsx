@@ -33,7 +33,7 @@ function App() {
     <>
       <div className={css.app}>
         <header className={css.toolbar}>
-          <SearchBox onChange={setQuery} />
+          <SearchBox value={query} onChange={setQuery} />
           {isSuccess && data.totalPages > 1 && (
             <Pagination
               pageCount={data.totalPages}
@@ -49,7 +49,7 @@ function App() {
         </header>
         {data?.notes && <NoteList notes={data.notes} />}{" "}
         {(isLoading || isFetching) && <Loader />}
-        {isError && <ErrorMessage />}
+        {isError || (data?.notes.length == 0 && <ErrorMessage />)}
       </div>
       {isModal && <NoteModal onClose={closeModal} />}
     </>
