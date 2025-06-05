@@ -12,7 +12,7 @@ interface FetchNotesHTTPResponse {
 }
 
 interface FetchNotesParams {
-  query?: string;
+  search?: string;
   page?: number;
   tag?: Tag;
   sortBy?: SortBy;
@@ -26,7 +26,7 @@ export interface CreateNoteParams {
 }
 
 export async function fetchNotes({
-  query,
+  search,
   page = 1,
   tag,
   sortBy = "created",
@@ -36,7 +36,7 @@ export async function fetchNotes({
     perPage: 12,
     sortBy: sortBy,
   };
-  if (query) params.query = query;
+  if (search) params.search = search;
   if (tag) params.tag = tag;
 
   const response = await axios.get<FetchNotesHTTPResponse>("", { params });
@@ -60,5 +60,3 @@ export async function deleteNote(noteId: number) {
   const response = await axios.delete<Note>(`/${noteId}`);
   return response.data;
 }
-
-export async function searchNote() {}
